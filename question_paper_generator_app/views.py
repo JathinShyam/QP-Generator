@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import QuestionForm, QuestionPaperForm
 from .models import Question
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 def add_question(request):
     if request.method == 'POST':
@@ -38,18 +38,17 @@ def question_paper_generate(request):
             medium_questions = Question.objects.filter(difficulty='Medium').order_by('?')[:total_medium]
             hard_questions = Question.objects.filter(difficulty='Hard').order_by('?')[:total_hard]
 
-            # Combine the questions and create the question paper
-            question_paper = []
-            for i in easy_questions:
-                question_paper.append(i.question)
-            for i in medium_questions:
-                question_paper.append(i.question)
-            for i in hard_questions:
-                question_paper.append(i.question)
+            # Format the data in JSON
+            question_paper = {
+                
+                    'Easy': [q.question for q in easy_questions],
+                    'Medium': [q.question for q in medium_questions],
+                    'Hard': [q.question for q in hard_questions],
+                
+            }
 
-            # question_paper = list(easy_questions) + list(medium_questions) + list(hard_questions)
-            # return question_paper
-            return HttpResponse(question_paper)
+            # Return JSON response
+            return JsonResponse(question_paper)
             
     else:
         form = QuestionPaperForm()
