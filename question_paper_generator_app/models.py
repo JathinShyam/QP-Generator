@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+
 
 class Question(models.Model):
     question = models.TextField()
@@ -7,14 +10,6 @@ class Question(models.Model):
     difficulty = models.CharField(max_length=255, choices=[('Easy', 'Easy'), ('Medium', 'Medium'), ('Hard', 'Hard')])
     marks = models.IntegerField()
 
-class QuestionStore(models.Model):
-    questions = models.ManyToManyField(Question)
+    def __str__(self):
+        return f'{self.subject} - {self.topic} - {self.difficulty}'
 
-class QuestionPaperGenerator(models.Model):
-    question_store = models.ForeignKey(QuestionStore, on_delete=models.CASCADE)
-    total_marks = models.IntegerField()
-    distribution = models.JSONField()
-
-    def generate_question_paper(self):
-        # Your code to generate the question paper goes here
-        pass
